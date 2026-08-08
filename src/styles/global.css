@@ -366,3 +366,28 @@ html[data-theme="dark"] .theme-toggle .knob {
   transform: translateX(19px);
   background: var(--lime);
 }
+
+/* soundwave equalizer animation */
+.eq-bar {
+  display: inline-block;
+  width: 3px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  animation: eqJump 0.8s ease-in-out infinite alternate;
+}
+.eq-bar:nth-child(1) { height: 14px; animation-delay: 0.1s; }
+.eq-bar:nth-child(2) { height: 20px; animation-delay: 0.3s; }
+.eq-bar:nth-child(3) { height: 10px; animation-delay: 0.2s; }
+.eq-bar:nth-child(4) { height: 16px; animation-delay: 0.4s; }
+
+.eq-bar.paused {
+  animation-play-state: paused !important;
+  height: 6px !important;
+}
+
+@keyframes eqJump {
+  0% { transform: scaleY(0.3); }
+  100% { transform: scaleY(1.2); }
+}
+
