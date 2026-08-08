@@ -1,0 +1,188 @@
+<div
+  id="cmdOverlay"
+  class="overlay hidden-ov"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Command palette"
+>
+  <div class="hard bg-[var(--paper)] w-full max-w-lg">
+    <div
+      class="flex items-center gap-3 border-b-[3px] border-[var(--ink)] px-4 py-3"
+    >
+      <span class="mono text-sm" aria-hidden="true">⌘</span>
+      <input
+        id="cmdInput"
+        type="text"
+        placeholder="Ketik: tentang, karya, email, tema..."
+        aria-label="Cari perintah"
+        class="flex-1 bg-transparent outline-none text-sm mono"
+        autocomplete="off"
+      />
+      <kbd
+        class="mono text-[10px] px-1.5 py-0.5 border-2 border-[var(--ink)] cursor-hover"
+        id="cmdClose"
+        role="button"
+        tabindex="0"
+        aria-label="Tutup command palette">ESC</kbd
+      >
+    </div>
+    <div id="cmdList" class="max-h-80 overflow-y-auto p-2" role="listbox"></div>
+  </div>
+</div>
+
+<script>
+  interface Command {
+    label: string;
+    hint: string;
+    action: () => void;
+  }
+
+  function initCommandPalette() {
+    const cmdOverlay = document.getElementById("cmdOverlay")!;
+    const cmdInput = document.getElementById("cmdInput") as HTMLInputElement;
+    const cmdList = document.getElementById("cmdList")!;
+    const cmdTrigger = document.getElementById("cmdTrigger");
+    const cmdClose = document.getElementById("cmdClose")!;
+    const themeToggle = document.getElementById("themeToggle");
+    const copyEmailBtn = document.getElementById("copyEmailBtn");
+
+    const commands: Command[] = [
+      { label: "Ke Tentang", hint: "Section", action: () => scrollToId("about") },
+      {
+        label: "Ke Pengalaman Kerja",
+        hint: "Section",
+        action: () => scrollToId("pengalaman"),
+      },
+      {
+        label: "Ke Karya / Portfolio",
+        hint: "Section",
+        action: () => scrollToId("portfolio"),
+      },
+      {
+        label: "Ke Testimoni",
+        hint: "Section",
+        action: () => scrollToId("testimoni"),
+      },
+      { label: "Ke Kontak", hint: "Section", action: () => scrollToId("contact") },
+      {
+        label: "Salin Alamat Email",
+        hint: "Aksi",
+        action: () => (copyEmailBtn as HTMLElement | null)?.click(),
+      },
+      {
+        label: "Ganti Tema Gelap/Terang",
+        hint: "Aksi",
+        action: () => (themeToggle as HTMLElement | null)?.click(),
+      },
+      {
+        label: "Unduh CV",
+        hint: "Aksi",
+        action: () => (window as any).showToast?.("Menyiapkan unduhan CV...", "💾"),
+      },
+      { label: "Buka GitHub", hint: "Link", action: () => window.open("#", "_blank") },
+      {
+        label: "Buka LinkedIn",
+        hint: "Link",
+        action: () => window.open("#", "_blank"),
+      },
+    ];
+
+    function scrollToId(id: string) {
+      closeCmd();
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
+
+    function renderCmdList(filter = "") {
+      cmdList.innerHTML = "";
+      const filtered = commands.filter((c) =>
+        c.label.toLowerCase().includes(filter.toLowerCase())
+      );
+      if (filtered.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "p-4 text-xs mono text-[var(--ink)]/50";
+        empty.textContent = "Tidak ditemukan...";
+        cmdList.appendChild(empty);
+        return;
+      }
+      filtered.forEach((c, i) => {
+        const item = document.createElement("div");
+        item.className =
+          "cmd-item flex justify-between items-center px-3 py-2.5 mono text-xs font-bold" +
+          (i === 0 ? " sel" : "");
+        item.setAttribute("role", "option");
+        const labelSpan = document.createElement("span");
+        labelSpan.textContent = c.label;
+        const hintSpan = document.createElement("span");
+        hintSpan.className = "text-[10px] opacity-50";
+        hintSpan.textContent = c.hint;
+        item.append(labelSpan, hintSpan);
+        item.addEventListener("click", c.action);
+        item.addEventListener("mouseenter", () => {
+          cmdList
+            .querySelectorAll(".cmd-item")
+            .forEach((el) => el.classList.remove("sel"));
+          item.classList.add("sel");
+        });
+        cmdList.appendChild(item);
+      });
+    }
+
+    function moveSelection(dir: number) {
+      const items = Array.from(cmdList.querySelectorAll(".cmd-item"));
+      if (items.length === 0) return;
+      let idx = items.findIndex((el) => el.classList.contains("sel"));
+      items[idx]?.classList.remove("sel");
+      idx = (idx + dir + items.length) % items.length;
+      items[idx].classList.add("sel");
+      items[idx].scrollIntoView({ block: "nearest" });
+    }
+
+    function openCmd() {
+      cmdOverlay.classList.remove("hidden-ov");
+      cmdInput.value = "";
+      renderCmdList();
+      setTimeout(() => cmdInput.focus(), 50);
+    }
+    function closeCmd() {
+      cmdOverlay.classList.add("hidden-ov");
+    }
+
+    cmdTrigger?.addEventListener("click", openCmd);
+    cmdClose.addEventListener("click", closeCmd);
+    cmdClose.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") closeCmd();
+    });
+    cmdOverlay.addEventListener("click", (e) => {
+      if (e.target === cmdOverlay) closeCmd();
+    });
+    cmdInput.addEventListener("input", () => renderCmdList(cmdInput.value));
+    cmdInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const sel =
+          cmdList.querySelector(".cmd-item.sel") ||
+          cmdList.querySelector(".cmd-item");
+        (sel as HTMLElement | null)?.click();
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        moveSelection(1);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        moveSelection(-1);
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        cmdOverlay.classList.contains("hidden-ov") ? openCmd() : closeCmd();
+      }
+      if (e.key === "Escape") {
+        closeCmd();
+        document.getElementById("projectOverlay")?.classList.add("hidden-ov");
+      }
+    });
+  }
+
+  initCommandPalette();
+</script>

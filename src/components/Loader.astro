@@ -1,0 +1,24 @@
+<div
+  id="loader"
+  class="fixed inset-0 bg-[var(--ink)] z-[999] flex flex-col items-center justify-center transition-all duration-700 ease-out"
+>
+  <div class="stamp bg-[var(--lime)] border-4 border-[var(--paper)] px-8 py-4">
+    <span class="display text-3xl sm:text-4xl text-[var(--ink)] tracking-tight"
+      >Aidil Pramadita Putra</span
+    >
+  </div>
+  <p class="mono text-[var(--paper)] text-xs mt-6 tracking-widest animate-pulse">
+    MEMUAT PORTFOLIO...
+  </p>
+</div>
+
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+      document
+        .getElementById("loader")
+        ?.classList.add("opacity-0", "pointer-events-none");
+      document.getElementById("main-content")?.classList.remove("opacity-0");
+    }, 1400);
+  });
+</script>

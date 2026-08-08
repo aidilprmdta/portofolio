@@ -1,0 +1,154 @@
+---
+import { initialComments } from "../data/comments";
+---
+
+<section id="contact" class="py-20 px-6 max-w-6xl mx-auto reveal">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+    <div class="lg:col-span-5 space-y-6">
+      <div>
+        <span class="mono text-xs font-bold text-[var(--coral)] tracking-widest">05 / KOLABORASI</span>
+        <h2 class="display text-3xl sm:text-4xl mt-2">HUBUNGI SAYA</h2>
+        <p class="text-xs text-[var(--ink)]/70 mt-3 leading-relaxed">
+          Punya ide menarik? Mari diskusikan atau sapa saya di saluran berikut.
+        </p>
+      </div>
+      <div class="space-y-3">
+        <a
+          href="www.linkedin.com/in/aidilprmdta"
+          class="cursor-hover hard-sm flex items-center justify-between p-4 bg-[var(--lime)] font-bold"
+        >
+          <span class="mono text-xs">LINKEDIN</span><span class="text-xs">→</span>
+        </a>
+        <a
+          href="https://github.com/aidilprmdta"
+          class="cursor-hover hard-sm flex items-center justify-between p-4 bg-[var(--coral)] text-white font-bold"
+        >
+          <span class="mono text-xs">GITHUB</span><span class="text-xs">→</span>
+        </a>
+        <a
+          href="https://instagram.com/aidilprmdta"
+          class="cursor-hover hard-sm flex items-center justify-between p-4 bg-[var(--pink)] text-white font-bold"
+        >
+          <span class="mono text-xs">INSTAGRAM</span><span class="text-xs">→</span>
+        </a>
+        <button
+          id="copyEmailBtn"
+          class="cursor-hover hard-sm w-full flex items-center justify-between p-4 bg-[var(--card)] font-bold text-left"
+        >
+          <span class="mono text-xs">EMAIL</span>
+          <span class="mono text-[10px] text-[var(--ink)]/60">pramadytaa@gmail.com · salin</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="lg:col-span-7 hard bg-[var(--card)] p-6 sm:p-8">
+      <h3 class="display text-sm mb-6 flex items-center gap-2">
+        <span>💬</span> Punya ide, project, atau masalah yang ingin diselesaikan?
+      </h3>
+      <form id="commentForm" class="space-y-4 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input
+            type="text"
+            id="commenterName"
+            placeholder="Nama Anda"
+            aria-label="Nama Anda"
+            class="hard-sm px-4 py-2.5 bg-[var(--paper)] text-xs"
+            required
+          />
+          <input
+            type="text"
+            id="commenterRole"
+            placeholder="Jabatan/Instansi"
+            aria-label="Jabatan atau Instansi"
+            class="hard-sm px-4 py-2.5 bg-[var(--paper)] text-xs"
+            required
+          />
+        </div>
+        <textarea
+          id="commenterText"
+          rows="3"
+          placeholder="Tinggalkan pesan di sini..."
+          aria-label="Pesan"
+          class="hard-sm w-full px-4 py-2.5 bg-[var(--paper)] text-xs resize-none"
+          required></textarea>
+        <button
+          type="submit"
+          class="cursor-hover hard hard-btn w-full py-2.5 bg-[var(--ink)] text-[var(--paper)] font-bold text-xs"
+          >KIRIM PESAN</button
+        >
+      </form>
+      <div id="commentsContainer" class="space-y-3 max-h-60 overflow-y-auto pr-1">
+        {
+          initialComments.map((c) => (
+            <div class="hard-sm p-3 bg-[var(--paper)]">
+              <div class="flex justify-between items-center mb-1">
+                <h4 class="text-xs font-bold">{c.name}</h4>
+                <span class="mono text-[9px] text-[var(--ink)]/50">{c.role}</span>
+              </div>
+              <p class="text-[11px] text-[var(--ink)]/70">"{c.text}"</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Guestbook
+  function initGuestbook() {
+    const commentForm = document.getElementById("commentForm") as HTMLFormElement;
+    const commentsContainer = document.getElementById("commentsContainer")!;
+
+    commentForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = (document.getElementById("commenterName") as HTMLInputElement).value.trim();
+      const role = (document.getElementById("commenterRole") as HTMLInputElement).value.trim();
+      const text = (document.getElementById("commenterText") as HTMLTextAreaElement).value.trim();
+      if (!name || !role || !text) return;
+
+      const newComment = document.createElement("div");
+      newComment.className =
+        "hard-sm p-3 bg-[var(--lime)] transform translate-y-2 opacity-0 transition-all duration-500";
+
+      const row = document.createElement("div");
+      row.className = "flex justify-between items-center mb-1";
+      const h4 = document.createElement("h4");
+      h4.className = "text-xs font-bold";
+      h4.textContent = name;
+      const span = document.createElement("span");
+      span.className = "mono text-[9px]";
+      span.textContent = role;
+      row.append(h4, span);
+
+      const p = document.createElement("p");
+      p.className = "text-[11px]";
+      p.textContent = `"${text}"`;
+
+      newComment.append(row, p);
+      commentsContainer.insertBefore(newComment, commentsContainer.firstChild);
+      setTimeout(() => newComment.classList.remove("translate-y-2", "opacity-0"), 50);
+      commentForm.reset();
+      (window as any).showToast?.("Pesan berhasil dikirim", "💬");
+    });
+  }
+
+  // Copy email
+  function initCopyEmail() {
+    const copyEmailBtn = document.getElementById("copyEmailBtn")!;
+    copyEmailBtn.addEventListener("click", () => {
+      const email = "pramadytaa@gmail.com";
+      navigator.clipboard
+        ?.writeText(email)
+        .then(() => {
+          (window as any).showToast?.("Email disalin ke clipboard", "📋");
+        })
+        .catch(() =>
+          (window as any).showToast?.("Gagal menyalin, salin manual: " + email, "⚠️")
+        );
+    });
+  }
+
+  initGuestbook();
+  initCopyEmail();
+</script>

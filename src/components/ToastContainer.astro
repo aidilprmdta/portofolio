@@ -1,0 +1,33 @@
+<div
+  id="toastContainer"
+  class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-2 items-end"
+  role="status"
+  aria-live="polite"
+  aria-atomic="true"
+>
+</div>
+
+<script>
+  function showToast(msg: string, emoji = "✅") {
+    const container = document.getElementById("toastContainer");
+    if (!container) return;
+    const t = document.createElement("div");
+    t.className =
+      "toast hard-sm bg-[var(--lime)] px-4 py-3 mono text-xs font-bold flex items-center gap-2";
+    const emojiSpan = document.createElement("span");
+    emojiSpan.textContent = emoji;
+    const msgSpan = document.createElement("span");
+    msgSpan.textContent = msg;
+    t.append(emojiSpan, msgSpan);
+    container.appendChild(t);
+    setTimeout(() => {
+      t.style.transition = "opacity .3s ease, transform .3s ease";
+      t.style.opacity = "0";
+      t.style.transform = "translateY(10px)";
+      setTimeout(() => t.remove(), 300);
+    }, 2400);
+  }
+
+  // Expose globally so other islands can trigger toasts
+  (window as any).showToast = showToast;
+</script>

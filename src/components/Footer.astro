@@ -1,0 +1,23 @@
+---
+import Marquee from "./Marquee.astro";
+---
+
+<footer class="border-t-[3px] border-[var(--ink)]">
+  <Marquee
+    items={["MARI BEKERJA SAMA"]}
+    wrapClass="bg-[var(--ink)] text-[var(--paper)] py-3"
+    trackClass="display text-lg"
+    itemClass="px-6"
+    separator="✦"
+  />
+  <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+    <p class="mono text-[10px] text-[var(--ink)]/60 tracking-wider">
+      © 2026 AIDIL PRAMADITA PUTRA. ALL RIGHTS RESERVED.
+    </p>
+    <a
+      href="#home"
+      class="cursor-hover hard-sm hard-btn px-4 py-2 mono text-[10px] font-bold bg-[var(--card)]"
+      >↑ KEMBALI KE ATAS</a
+    >
+  </div>
+</footer>

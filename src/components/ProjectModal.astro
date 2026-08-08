@@ -1,0 +1,83 @@
+<div
+  id="projectOverlay"
+  class="overlay modal-panel hidden-ov"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modalTitle"
+>
+  <div
+    class="hard bg-[var(--paper)] w-full max-w-2xl max-h-[88vh] overflow-y-auto relative"
+  >
+    <button
+      id="projectClose"
+      class="cursor-hover hard-sm absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-[var(--card)] font-bold text-sm z-10"
+      aria-label="Tutup detail proyek">✕</button
+    >
+    <div class="h-56 sm:h-72 border-b-[3px] border-[var(--ink)] overflow-hidden">
+      <img id="modalImg" src="" alt="" class="w-full h-full object-cover" loading="lazy" />
+    </div>
+    <div class="p-6 sm:p-8">
+      <h3 id="modalTitle" class="display text-xl sm:text-2xl mb-3"></h3>
+      <p id="modalDesc" class="text-sm text-[var(--ink)]/80 leading-relaxed mb-5"></p>
+      <div id="modalTags" class="flex flex-wrap gap-2 mb-6"></div>
+      <div class="flex flex-wrap gap-3">
+        <a
+          id="modalLive"
+          href="#"
+          target="_blank"
+          class="cursor-hover hard-sm hard-btn px-5 py-2.5 bg-[var(--blue)] text-white mono text-xs font-bold"
+          >LIHAT LIVE →</a
+        >
+        <a
+          id="modalRepo"
+          href="#"
+          target="_blank"
+          class="cursor-hover hard-sm hard-btn px-5 py-2.5 bg-[var(--card)] mono text-xs font-bold"
+          >REPO KODE</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initProjectModal() {
+    const projectOverlay = document.getElementById("projectOverlay")!;
+    const projectClose = document.getElementById("projectClose")!;
+
+    document.querySelectorAll(".project-card").forEach((card) => {
+      card.addEventListener("click", () => {
+        const el = card as HTMLElement;
+        (document.getElementById("modalImg") as HTMLImageElement).src =
+          el.dataset.img || "";
+        (document.getElementById("modalImg") as HTMLImageElement).alt =
+          `Tangkapan layar proyek ${el.dataset.title}`;
+        document.getElementById("modalTitle")!.textContent = el.dataset.title || "";
+        document.getElementById("modalDesc")!.textContent = el.dataset.desc || "";
+        (document.getElementById("modalLive") as HTMLAnchorElement).href =
+          el.dataset.live || "#";
+        (document.getElementById("modalRepo") as HTMLAnchorElement).href =
+          el.dataset.repo || "#";
+        const tagsWrap = document.getElementById("modalTags")!;
+        tagsWrap.innerHTML = "";
+        (el.dataset.tags || "").split(",").forEach((tag) => {
+          const span = document.createElement("span");
+          span.className =
+            "mono text-[10px] px-2.5 py-1 bg-[var(--lime)] border-2 border-[var(--ink)] font-bold";
+          span.textContent = tag.trim();
+          tagsWrap.appendChild(span);
+        });
+        projectOverlay.classList.remove("hidden-ov");
+      });
+    });
+
+    projectClose.addEventListener("click", () =>
+      projectOverlay.classList.add("hidden-ov")
+    );
+    projectOverlay.addEventListener("click", (e) => {
+      if (e.target === projectOverlay) projectOverlay.classList.add("hidden-ov");
+    });
+  }
+
+  initProjectModal();
+</script>

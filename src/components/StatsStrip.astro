@@ -1,0 +1,25 @@
+---
+import { stats } from "../data/experience";
+---
+
+<section
+  class="border-y-[3px] border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)] reveal"
+>
+  <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4">
+    {
+      stats.map((stat, i) => (
+        <div
+          class:list={[
+            "p-8 text-center",
+            i < stats.length - 1 && "border-r-[3px] border-[var(--paper)]/20",
+            i === 2 && "border-t-[3px] md:border-t-0",
+            i === 3 && "border-t-[3px] md:border-t-0",
+          ]}
+        >
+          <p class:list={["display text-3xl sm:text-4xl", stat.color]}>{stat.value}</p>
+          <p class="mono text-[10px] mt-2 tracking-widest opacity-80">{stat.label}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>

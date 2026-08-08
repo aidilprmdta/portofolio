@@ -1,0 +1,109 @@
+<header
+  class="sticky top-0 z-40 bg-[var(--paper)]/95 backdrop-blur border-b-[3px] border-[var(--ink)]"
+>
+  <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="#home" class="flex items-center gap-3 cursor-hover">
+      <div
+        class="hard-sm stamp w-10 h-10 bg-[var(--blue)] flex items-center justify-center"
+      >
+        <span class="display text-[var(--paper)] text-sm">APP</span>
+      </div>
+      <span class="display text-sm tracking-tight hidden sm:inline-block"
+        >aidilprmdta.id</span
+      >
+    </a>
+    <nav class="hidden sm:flex items-center gap-8 mono text-xs font-bold tracking-wide">
+      <a
+        href="#about"
+        data-nav="about"
+        class="nav-link cursor-hover hover:text-[var(--blue)] transition-colors"
+        >TENTANG</a
+      >
+      <a
+        href="#pengalaman"
+        data-nav="pengalaman"
+        class="nav-link cursor-hover hover:text-[var(--blue)] transition-colors"
+        >KARIR</a
+      >
+      <a
+        href="#portfolio"
+        data-nav="portfolio"
+        class="nav-link cursor-hover hover:text-[var(--blue)] transition-colors"
+        >KARYA</a
+      >
+      <a
+        href="#contact"
+        data-nav="contact"
+        class="nav-link cursor-hover hover:text-[var(--blue)] transition-colors"
+        >KONTAK</a
+      >
+    </nav>
+    <div class="flex items-center gap-3">
+      <button
+        id="cmdTrigger"
+        class="cursor-hover hard-sm hidden md:flex items-center gap-2 px-3 py-2 bg-[var(--card)] mono text-[10px] font-bold"
+        aria-label="Buka command palette"
+      >
+        <span aria-hidden="true">🔍</span><span>CARI</span
+        ><kbd class="border border-[var(--ink)] px-1">⌘K</kbd>
+      </button>
+      <button
+        id="themeToggle"
+        class="theme-toggle cursor-hover"
+        title="Ganti tema"
+        aria-label="Ganti tema gelap/terang"
+        aria-pressed="false"
+      ><span class="knob"></span></button>
+      <a
+        href="#contact"
+        class="hard-sm hard-btn cursor-hover px-4 py-2 bg-[var(--coral)] text-[var(--paper)] mono text-xs font-bold"
+        >REKRUT SAYA</a
+      >
+    </div>
+  </div>
+</header>
+
+<script>
+  // Active nav on scroll
+  const navLinks = document.querySelectorAll(".nav-link");
+  const navSections = Array.from(navLinks)
+    .map((l) => document.getElementById((l as HTMLElement).dataset.nav || ""))
+    .filter(Boolean) as HTMLElement[];
+
+  const navObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const link = document.querySelector(
+          `.nav-link[data-nav="${entry.target.id}"]`
+        );
+        if (!link) return;
+        if (entry.isIntersecting) {
+          navLinks.forEach((l) => l.classList.remove("active"));
+          link.classList.add("active");
+        }
+      });
+    },
+    { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+  );
+  navSections.forEach((sec) => navObserver.observe(sec));
+
+  // Theme toggle
+  const themeToggle = document.getElementById("themeToggle")!;
+  themeToggle.setAttribute(
+    "aria-pressed",
+    String(document.documentElement.getAttribute("data-theme") === "dark")
+  );
+  themeToggle.addEventListener("click", () => {
+    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    const nextTheme = isDark ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", nextTheme);
+    themeToggle.setAttribute("aria-pressed", String(!isDark));
+    try {
+      localStorage.setItem("theme", nextTheme);
+    } catch (e) {}
+    (window as any).showToast?.(
+      isDark ? "Tema terang aktif" : "Tema gelap aktif",
+      isDark ? "☀️" : "🌙"
+    );
+  });
+</script>

@@ -1,0 +1,67 @@
+---
+import { projects } from "../data/projects";
+import ProjectCard from "./ProjectCard.astro";
+
+const filters = [
+  { key: "all", label: "SEMUA" },
+  { key: "it", label: "IT/DEV" },
+  { key: "design", label: "DESAIN" },
+  { key: "video", label: "VIDEO" },
+];
+---
+
+<section id="portfolio" class="py-20 px-6 max-w-6xl mx-auto reveal">
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 gap-4">
+    <div>
+      <span class="mono text-xs font-bold text-[var(--coral)] tracking-widest">03 / KATALOG</span>
+      <h2 class="display text-3xl sm:text-4xl mt-2">EKSPLORASI PROJECT</h2>
+    </div>
+    <div class="flex flex-wrap gap-2" id="portfolio-tabs">
+      {
+        filters.map((f, i) => (
+          <button
+            class:list={[
+              "tab-btn cursor-hover hard-sm px-4 py-2 mono text-xs font-bold",
+              i === 0 ? "bg-[var(--ink)] text-[var(--paper)]" : "bg-[var(--card)]",
+            ]}
+            data-filter={f.key}
+          >
+            {f.label}
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="portfolio-grid">
+    {
+      projects.map((project) => (
+        <div class:list={[project.initiallyHidden && "hidden"]}>
+          <ProjectCard project={project} />
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  const tabBtns = document.querySelectorAll(".tab-btn");
+  const projectCards = document.querySelectorAll(".project-card");
+  tabBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      tabBtns.forEach((b) => {
+        b.classList.remove("bg-[var(--ink)]", "text-[var(--paper)]");
+        b.classList.add("bg-[var(--card)]");
+      });
+      btn.classList.add("bg-[var(--ink)]", "text-[var(--paper)]");
+      btn.classList.remove("bg-[var(--card)]");
+      const filter = btn.getAttribute("data-filter");
+      projectCards.forEach((card) => {
+        const cat = card.getAttribute("data-cat");
+        const wrapper = card.parentElement;
+        const show = filter === "all" || cat === filter;
+        wrapper?.classList.toggle("hidden", !show);
+      });
+    });
+  });
+</script>

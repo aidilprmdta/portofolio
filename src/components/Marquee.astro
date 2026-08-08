@@ -1,0 +1,33 @@
+---
+interface Props {
+  items: string[];
+  wrapClass?: string;
+  trackClass?: string;
+  itemClass?: string;
+  separator?: string;
+}
+
+const {
+  items,
+  wrapClass = "",
+  trackClass = "",
+  itemClass = "px-4",
+  separator = "",
+} = Astro.props;
+
+// Duplicate items for seamless infinite scroll
+const loopItems = [...items, ...items];
+---
+
+<div class={`marquee-wrap ${wrapClass}`}>
+  <div class={`marquee-track ${trackClass}`}>
+    {
+      loopItems.map((item) => (
+        <span class={itemClass}>
+          {item}
+          {separator && <span class="px-2">{separator}</span>}
+        </span>
+      ))
+    }
+  </div>
+</div>

@@ -1,0 +1,61 @@
+---
+import type { Project } from "../data/projects";
+import { tagColorClass } from "../data/projects";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<div
+  class:list={[
+    "project-card cursor-hover relative hard bg-[var(--card)] overflow-hidden group",
+    project.rotate,
+  ]}
+  data-cat={project.category}
+  data-title={project.title}
+  data-desc={project.desc}
+  data-img={project.img}
+  data-tags={project.tags.join(",")}
+  data-live={project.live}
+  data-repo={project.repo}
+>
+  <div class="tape"></div>
+  <div class="h-52 overflow-hidden border-b-[3px] border-[var(--ink)]">
+    <img
+      src={project.thumb}
+      alt={`Tangkapan layar ${project.title}`}
+      loading="lazy"
+      decoding="async"
+      class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+    />
+  </div>
+  <div class="p-6">
+    <h3 class="display text-base group-hover:text-[var(--blue)] transition">
+      {project.title}
+    </h3>
+    <p class="text-xs text-[var(--ink)]/70 mt-2 leading-relaxed">
+      {project.shortDesc}
+    </p>
+    <div class="flex gap-2 mt-4 flex-wrap">
+      {
+        project.tags.slice(0, 2).map((tag) => (
+          <span
+            class:list={[
+              "mono text-[10px] px-2.5 py-1 border-2 border-[var(--ink)] font-bold",
+              tagColorClass[project.tagColor],
+            ]}
+          >
+            {tag.toUpperCase()}
+          </span>
+        ))
+      }
+      <span
+        class="mono text-[10px] px-2.5 py-1 bg-[var(--card)] border-2 border-[var(--ink)] font-bold ml-auto"
+        >DETAIL →</span
+      >
+    </div>
+  </div>
+</div>

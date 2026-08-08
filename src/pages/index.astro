@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ScrollProgress from "../components/ScrollProgress.astro";
+import ToastContainer from "../components/ToastContainer.astro";
+import CommandPalette from "../components/CommandPalette.astro";
+import ProjectModal from "../components/ProjectModal.astro";
+import Cursor from "../components/Cursor.astro";
+import Loader from "../components/Loader.astro";
+import TopTicker from "../components/TopTicker.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import About from "../components/About.astro";
+import StatsStrip from "../components/StatsStrip.astro";
+import Experience from "../components/Experience.astro";
+import Portfolio from "../components/Portfolio.astro";
+import Contact from "../components/Contact.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<BaseLayout>
+  <ScrollProgress />
+  <ToastContainer />
+  <CommandPalette />
+  <ProjectModal />
+  <Cursor />
+  <Loader />
+
+  <div id="main-content" class="opacity-0 transition-opacity duration-700">
+    <TopTicker />
+    <Header />
+    <Hero />
+    <About />
+    <StatsStrip />
+    <Experience />
+    <Portfolio />
+    <Contact />
+    <Footer />
+  </div>
+</BaseLayout>
+
+<script>
+  // Scroll reveal
+  const revealEls = document.querySelectorAll(".reveal");
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in");
+          io.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.12 }
+  );
+  revealEls.forEach((el) => io.observe(el));
+</script>

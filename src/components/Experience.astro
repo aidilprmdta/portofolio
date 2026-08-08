@@ -1,0 +1,118 @@
+---
+import { experience, skills } from "../data/experience";
+import { certifications } from "../data/projects";
+---
+
+<section id="pengalaman" class="py-20 px-6 max-w-4xl mx-auto reveal">
+  <span class="mono text-xs font-bold text-[var(--coral)] tracking-widest">02 / PERJALANAN</span>
+  <h2 class="display text-3xl sm:text-4xl mt-2 mb-14">PENGALAMAN KERJA</h2>
+
+  <div class="timeline-line space-y-10">
+    {
+      experience.map((item, i) => {
+        const leftSide = i % 2 === 0;
+        return (
+          <div class="relative flex md:justify-between items-start gap-5 md:gap-10">
+            <div
+              class:list={[
+                leftSide
+                  ? "md:w-[45%] md:text-right order-1 md:order-1"
+                  : "hidden md:block md:w-[45%] order-1",
+              ]}
+            >
+              {leftSide && (
+                <>
+                  <span class:list={["mono text-[10px] font-bold", item.color]}>
+                    {item.period}
+                  </span>
+                  <h3 class="display text-base mt-1">{item.title}</h3>
+                  <p class="text-xs text-[var(--ink)]/70 mt-1">{item.desc}</p>
+                </>
+              )}
+            </div>
+            <div class="timeline-dot mt-1 order-0 md:order-2 relative md:absolute md:left-1/2 md:-translate-x-1/2" />
+            <div
+              class:list={[
+                leftSide ? "hidden md:block md:w-[45%] order-2" : "md:w-[45%] order-2",
+              ]}
+            >
+              {!leftSide && (
+                <>
+                  <span class:list={["mono text-[10px] font-bold", item.color]}>
+                    {item.period}
+                  </span>
+                  <h3 class="display text-base mt-1">{item.title}</h3>
+                  <p class="text-xs text-[var(--ink)]/70 mt-1">{item.desc}</p>
+                </>
+              )}
+            </div>
+          </div>
+        );
+      })
+    }
+  </div>
+
+  <!-- Skill bars -->
+  <div class="mt-16 pt-12 border-t-[3px] border-[var(--ink)]">
+    <h3 class="display text-base mb-6">TINGKAT KEAHLIAN</h3>
+    <div class="space-y-5">
+      {
+        skills.map((skill) => (
+          <div>
+            <div class="flex justify-between mono text-xs font-bold mb-1.5">
+              <span>{skill.label}</span>
+              <span>{skill.percent}%</span>
+            </div>
+            <div class="skill-track">
+              <div
+                class="skill-fill"
+                style={`background:${skill.color}`}
+                data-width={skill.percent}
+              />
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <!-- Certifications -->
+  <div class="mt-16 pt-12 border-t-[3px] border-[var(--ink)]">
+    <h3 class="display text-base mb-6 flex items-center gap-2">
+      <span>🏆</span> LISENSI & KREDENSIAL
+    </h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {
+        certifications.map((cert) => (
+          <div class="hard-sm bg-[var(--card)] p-4 flex justify-between items-center">
+            <div>
+              <h4 class="text-xs font-bold">{cert.name}</h4>
+              <p class="mono text-[10px] text-[var(--ink)]/60 mt-0.5">{cert.issuer}</p>
+            </div>
+            <span class="mono text-[10px] px-2.5 py-1 bg-[var(--lime)] border-2 border-[var(--ink)] font-bold">
+              VERIFIED
+            </span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  // Skill bar animation
+  const skillFills = document.querySelectorAll(".skill-fill");
+  const skillObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const el = entry.target as HTMLElement;
+          el.style.width = el.dataset.width + "%";
+          skillObserver.unobserve(el);
+        }
+      });
+    },
+    { threshold: 0.4 }
+  );
+  skillFills.forEach((el) => skillObserver.observe(el));
+</script>
