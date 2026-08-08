@@ -1,5 +1,6 @@
 ---
 import { techStack } from "../data/experience";
+import { playlist } from "../data/music";
 ---
 
 <section id="about" class="py-20 px-6 max-w-6xl mx-auto reveal">
@@ -14,9 +15,10 @@ import { techStack } from "../data/experience";
       <div class="space-y-4">
         <div class="flex items-center gap-4">
           <img
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
-            alt="Foto aidil"
-            class="w-16 h-16 object-cover border-[3px] border-[var(--ink)]"
+            src="/aidil.jpg"
+            alt="Foto Aidil"
+            class="w-16 h-16 object-cover border-[3px] border-[var(--ink)] shadow-[3px_3px_0_0_var(--ink)]"
+            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150';"
           />
           <div>
             <h3 class="display text-lg">Aidil Pramadita Putra</h3>
@@ -41,20 +43,92 @@ import { techStack } from "../data/experience";
       </div>
     </div>
 
-    <!-- Now playing -->
+    <!-- Now playing Music Widget -->
     <div class="hard bg-[var(--pink)] text-[var(--paper)] p-6 flex flex-col justify-between rotate-1">
-      <div class="flex justify-between items-start">
-        <span class="mono text-[10px] uppercase font-bold tracking-wider">Now Playing</span>
-        <span class="text-lg">🎵</span>
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <span class="mono text-[10px] uppercase font-bold tracking-wider">Now Playing</span>
+          <div class="flex items-end gap-[2px] h-4">
+            <span class="eq-bar paused"></span>
+            <span class="eq-bar paused"></span>
+            <span class="eq-bar paused"></span>
+            <span class="eq-bar paused"></span>
+          </div>
+        </div>
+        <span id="music-cover" class="text-xl px-2 py-0.5 bg-[var(--ink)] border border-[var(--paper)] hard-sm text-[var(--paper)]">
+          {playlist[0].cover}
+        </span>
       </div>
-      <div class="my-6">
-        <p class="text-xs opacity-80">Kini sedang diputar:</p>
-        <h4 class="display text-base mt-1">MIDNIGHT CITY</h4>
-        <p class="text-xs opacity-80">M83 — Synthwave Mix</p>
+
+      <div class="my-4">
+        <p class="text-[10px] mono uppercase tracking-wider opacity-80">Sedang Diputar:</p>
+        <h4 id="music-title" class="display text-base mt-0.5 leading-snug line-clamp-1">
+          {playlist[0].title}
+        </h4>
+        <p id="music-artist" class="text-xs opacity-90 font-medium">
+          {playlist[0].artist}
+        </p>
       </div>
-      <div class="w-full bg-[var(--ink)]/30 h-2 border border-[var(--ink)]">
-        <div class="bg-[var(--lime)] h-full w-[65%]"></div>
+
+      <!-- Controls & Progress -->
+      <div class="space-y-3">
+        <!-- Interactive buttons -->
+        <div class="flex items-center justify-between bg-[var(--ink)]/20 p-2 border-2 border-[var(--ink)]">
+          <button
+            id="music-prev-btn"
+            title="Lagu Sebelumnya"
+            class="cursor-hover text-xs px-2 py-1 bg-[var(--paper)] text-[var(--ink)] font-bold border-2 border-[var(--ink)] hard-sm hover:bg-[var(--lime)]"
+          >
+            ⏮
+          </button>
+          
+          <button
+            id="music-play-btn"
+            title="Putar / Jeda"
+            class="cursor-hover text-sm px-4 py-1 bg-[var(--lime)] text-[var(--ink)] font-extrabold border-2 border-[var(--ink)] hard-sm flex items-center gap-1.5 hover:scale-105 transition-transform"
+          >
+            <span id="music-play-icon">▶</span>
+            <span class="mono text-[10px]">PLAY</span>
+          </button>
+          
+          <button
+            id="music-next-btn"
+            title="Lagu Selanjutnya"
+            class="cursor-hover text-xs px-2 py-1 bg-[var(--paper)] text-[var(--ink)] font-bold border-2 border-[var(--ink)] hard-sm hover:bg-[var(--lime)]"
+          >
+            ⏭
+          </button>
+          
+          <button
+            id="music-vol-btn"
+            title="Mute / Unmute"
+            class="cursor-hover text-xs px-2 py-1 bg-[var(--paper)] text-[var(--ink)] font-bold border-2 border-[var(--ink)] hard-sm hover:bg-[var(--lime)]"
+          >
+            <span id="music-vol-icon">🔊</span>
+          </button>
+        </div>
+
+        <!-- Progress Bar & Timer -->
+        <div>
+          <div class="flex justify-between text-[9px] mono opacity-90 font-bold mb-1">
+            <span id="music-current-time">00:00</span>
+            <span id="music-duration-time">{playlist[0].duration}</span>
+          </div>
+          <div class="relative w-full bg-[var(--ink)]/40 h-2.5 border-2 border-[var(--ink)] overflow-hidden cursor-pointer">
+            <div id="music-progress-fill" class="bg-[var(--lime)] h-full w-0 transition-all duration-150"></div>
+            <input
+              type="range"
+              id="music-progress-bar"
+              min="0"
+              max="100"
+              value="0"
+              class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
+          </div>
+        </div>
       </div>
+
+      <audio id="audio-player" preload="metadata"></audio>
     </div>
 
     <!-- Clock -->
@@ -93,6 +167,172 @@ import { techStack } from "../data/experience";
 </section>
 
 <script>
+  import { playlist } from "../data/music";
+
+  function initMusicPlayer() {
+    let currentTrackIndex = 0;
+    let isPlaying = false;
+    let isMuted = false;
+
+    const audio = document.getElementById("audio-player") as HTMLAudioElement;
+    const playBtn = document.getElementById("music-play-btn")!;
+    const playIcon = document.getElementById("music-play-icon")!;
+    const prevBtn = document.getElementById("music-prev-btn")!;
+    const nextBtn = document.getElementById("music-next-btn")!;
+    const volumeBtn = document.getElementById("music-vol-btn")!;
+    const volIcon = document.getElementById("music-vol-icon")!;
+    
+    const titleEl = document.getElementById("music-title")!;
+    const artistEl = document.getElementById("music-artist")!;
+    const coverEl = document.getElementById("music-cover")!;
+    const currentTimeEl = document.getElementById("music-current-time")!;
+    const durationTimeEl = document.getElementById("music-duration-time")!;
+    const progressBar = document.getElementById("music-progress-bar") as HTMLInputElement;
+    const progressFill = document.getElementById("music-progress-fill")!;
+    const eqBars = document.querySelectorAll(".eq-bar");
+
+    // Web Audio Synthesizer fallback if external audio fails/blocked
+    let audioCtx: AudioContext | null = null;
+    let synthInterval: any = null;
+
+    function playSynthTone() {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+        }
+        if (audioCtx.state === "suspended") {
+          audioCtx.resume();
+        }
+        
+        const freqs = [261.63, 329.63, 392.00, 493.88, 523.25]; // C4, E4, G4, B4, C5 (Lofi chords)
+        const freq = freqs[Math.floor(Math.random() * freqs.length)];
+        
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1.2);
+      } catch (err) {}
+    }
+
+    function startSynthLoop() {
+      if (synthInterval) clearInterval(synthInterval);
+      playSynthTone();
+      synthInterval = setInterval(playSynthTone, 600);
+    }
+
+    function stopSynthLoop() {
+      if (synthInterval) {
+        clearInterval(synthInterval);
+        synthInterval = null;
+      }
+    }
+
+    function loadTrack(index: number) {
+      currentTrackIndex = (index + playlist.length) % playlist.length;
+      const track = playlist[currentTrackIndex];
+
+      titleEl.textContent = track.title;
+      artistEl.textContent = track.artist;
+      coverEl.textContent = track.cover;
+      durationTimeEl.textContent = track.duration;
+
+      audio.src = track.src;
+      audio.load();
+      progressBar.value = "0";
+      progressFill.style.width = "0%";
+      currentTimeEl.textContent = "00:00";
+    }
+
+    function formatTime(seconds: number): string {
+      if (isNaN(seconds)) return "00:00";
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins < 10 ? "0" : ""}${mins}:${secs < 10 ? "0" : ""}${secs}`;
+    }
+
+    function setPlayingState(playing: boolean) {
+      isPlaying = playing;
+      playIcon.textContent = isPlaying ? "⏸" : "▶";
+      eqBars.forEach((bar) => {
+        if (isPlaying) bar.classList.remove("paused");
+        else bar.classList.add("paused");
+      });
+    }
+
+    async function togglePlay() {
+      if (isPlaying) {
+        audio.pause();
+        stopSynthLoop();
+        setPlayingState(false);
+      } else {
+        try {
+          await audio.play();
+          setPlayingState(true);
+        } catch (e) {
+          console.warn("[MusicPlayer] External audio playback failed, falling back to Pop Punk synth:", e);
+          startSynthLoop();
+          setPlayingState(true);
+          (window as any).showToast?.("Memutar Pop Punk Synth 🎸", "🎸");
+        }
+      }
+    }
+
+    playBtn.addEventListener("click", togglePlay);
+
+    prevBtn.addEventListener("click", () => {
+      loadTrack(currentTrackIndex - 1);
+      if (isPlaying) {
+        audio.play().catch(() => startSynthLoop());
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      loadTrack(currentTrackIndex + 1);
+      if (isPlaying) {
+        audio.play().catch(() => startSynthLoop());
+      }
+    });
+
+    volumeBtn.addEventListener("click", () => {
+      isMuted = !isMuted;
+      audio.muted = isMuted;
+      volIcon.textContent = isMuted ? "🔇" : "🔊";
+    });
+
+    audio.addEventListener("timeupdate", () => {
+      if (!isNaN(audio.duration) && audio.duration > 0) {
+        const pct = (audio.currentTime / audio.duration) * 100;
+        progressBar.value = pct.toString();
+        progressFill.style.width = `${pct}%`;
+        currentTimeEl.textContent = formatTime(audio.currentTime);
+        durationTimeEl.textContent = formatTime(audio.duration);
+      }
+    });
+
+    audio.addEventListener("ended", () => {
+      loadTrack(currentTrackIndex + 1);
+      audio.play().catch(() => startSynthLoop());
+    });
+
+    progressBar.addEventListener("input", (e) => {
+      const val = parseFloat((e.target as HTMLInputElement).value);
+      if (!isNaN(audio.duration)) {
+        audio.currentTime = (val / 100) * audio.duration;
+      }
+    });
+
+    loadTrack(0);
+  }
+
   function updateClock() {
     const options: Intl.DateTimeFormatOptions = {
       timeZone: "Asia/Jakarta",
@@ -105,6 +345,8 @@ import { techStack } from "../data/experience";
     const el = document.getElementById("live-clock");
     if (el) el.textContent = formatter.format(new Date());
   }
+
+  initMusicPlayer();
   setInterval(updateClock, 1000);
   updateClock();
 </script>
