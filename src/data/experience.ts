@@ -7,27 +7,45 @@ export interface ExperienceItem {
 
 export const experience: ExperienceItem[] = [
   {
-    period: "2024 — SEKARANG",
-    title: "SENIOR CREATIVE DEVELOPER",
-    desc: "Studio Kinetic — memimpin pengembangan produk digital dari desain sistem sampai deployment.",
-    color: "text-[var(--blue)]",
-  },
-  {
-    period: "2022 — 2024",
-    title: "FRONTEND ENGINEER",
-    desc: "Klika Studio — membangun antarmuka React untuk klien FinTech dan e-commerce.",
+    period: "2025 - SEKARANG",
+    title: "DEPUTY HEAD OF THE INFORMATION AND COMMUNICATION DEPARTMENT",
+    desc: "HIMATIF UIN SUSKA — ",
     color: "text-[var(--coral)]",
   },
   {
-    period: "2020 — 2022",
-    title: "UI/UX DESIGNER",
-    desc: "Digital Nexus — riset pengguna, wireframe, dan design system untuk aplikasi mobile.",
+    period: "2025 - SEKARANG",
+    title: "VICE HEAD — Riau DevOps",
+    desc: "Berkontribusi dalam pengembangan ekosistem software development, web development, dan DevOps melalui RDO.",
     color: "text-[var(--pink)]",
   },
   {
-    period: "2019 — 2020",
-    title: "JUNIOR WEB DEVELOPER",
-    desc: "Freelance — mengerjakan landing page dan website profil untuk UMKM lokal.",
+    period: "2025 - SEKARANG",
+    title: "Humas Fakultas Sains dan Teknologi - UIN SUSKA RIAU",
+    desc: "",
+    color: "text-[var(--pink)]",
+  },
+  {
+    period: "2025",
+    title: "Coordinator — HID, HIMATIF UIN SUSKA",
+    desc: "Mengkoordinasikan public relations, information flow, dan documentation",
+    color: "",
+  },
+  {
+    period: "2021 - 2022",
+    title: "Members Of Jurnalism",
+    desc: "",
+    color: "",
+  },
+  {
+    period: "2025 - SEKARANG",
+    title: "Freelance Video Editor & Graphic Designer",
+    desc: "",
+    color: "",
+  },
+  {
+    period: "2019 - 2020",
+    title: "Freelance Illustrator",
+    desc: "Membuat ilustrasi untuk berbagai klien dan proyek",
     color: "",
   },
 ];

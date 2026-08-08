@@ -14,22 +14,36 @@ import { initialComments } from "../data/comments";
       </div>
       <div class="space-y-3">
         <a
-          href="www.linkedin.com/in/aidilprmdta"
+          href="https://www.linkedin.com/in/aidilprmdta"
+          target="_blank"
+          rel="noopener noreferrer"
           class="cursor-hover hard-sm flex items-center justify-between p-4 bg-[var(--lime)] font-bold"
         >
           <span class="mono text-xs">LINKEDIN</span><span class="text-xs">→</span>
         </a>
         <a
           href="https://github.com/aidilprmdta"
+          target="_blank"
+          rel="noopener noreferrer"
           class="cursor-hover hard-sm flex items-center justify-between p-4 bg-[var(--coral)] text-white font-bold"
         >
           <span class="mono text-xs">GITHUB</span><span class="text-xs">→</span>
         </a>
         <a
           href="https://instagram.com/aidilprmdta"
+          target="_blank"
+          rel="noopener noreferrer"
           class="cursor-hover hard-sm flex items-center justify-between p-4 bg-[var(--pink)] text-white font-bold"
         >
           <span class="mono text-xs">INSTAGRAM</span><span class="text-xs">→</span>
+        </a>
+        <a
+          href="https://www.youtube.com/c/AidilTipi"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="cursor-hover hard-sm w-full flex items-center justify-between p-4 bg-[var(--red)] text-white font-bold text-left"
+        >
+          <span class="mono text-xs">YOUTUBE</span><span class="text-xs">→</span>
         </a>
         <button
           id="copyEmailBtn"
@@ -42,9 +56,15 @@ import { initialComments } from "../data/comments";
     </div>
 
     <div class="lg:col-span-7 hard bg-[var(--card)] p-6 sm:p-8">
-      <h3 class="display text-sm mb-6 flex items-center gap-2">
-        <span>💬</span> Punya ide, project, atau masalah yang ingin diselesaikan?
-      </h3>
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="display text-sm flex items-center gap-2">
+          <span>💬</span> Guestbook / Komentar
+        </h3>
+        <span id="supabaseStatus" class="mono text-[10px] px-2 py-0.5 hard-sm bg-[var(--paper)] text-[var(--ink)]/60">
+          ⚡ Supabase Connected
+        </span>
+      </div>
+
       <form id="commentForm" class="space-y-4 mb-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <input
@@ -72,11 +92,14 @@ import { initialComments } from "../data/comments";
           class="hard-sm w-full px-4 py-2.5 bg-[var(--paper)] text-xs resize-none"
           required></textarea>
         <button
+          id="submitCommentBtn"
           type="submit"
-          class="cursor-hover hard hard-btn w-full py-2.5 bg-[var(--ink)] text-[var(--paper)] font-bold text-xs"
-          >KIRIM PESAN</button
+          class="cursor-hover hard hard-btn w-full py-2.5 bg-[var(--ink)] text-[var(--paper)] font-bold text-xs flex items-center justify-center gap-2"
         >
+          <span>KIRIM PESAN</span>
+        </button>
       </form>
+
       <div id="commentsContainer" class="space-y-3 max-h-60 overflow-y-auto pr-1">
         {
           initialComments.map((c) => (
@@ -95,45 +118,112 @@ import { initialComments } from "../data/comments";
 </section>
 
 <script>
-  // Guestbook
-  function initGuestbook() {
+  import { fetchCommentsFromSupabase, postCommentToSupabase, isSupabaseConfigured } from "../lib/supabase";
+  import type { Comment } from "../data/comments";
+
+  function renderCommentCard(comment: Comment, isHighlight = false): HTMLElement {
+    const card = document.createElement("div");
+    card.className = isHighlight
+      ? "hard-sm p-3 bg-[var(--lime)] transform translate-y-2 opacity-0 transition-all duration-500"
+      : "hard-sm p-3 bg-[var(--paper)]";
+
+    const row = document.createElement("div");
+    row.className = "flex justify-between items-center mb-1";
+    
+    const h4 = document.createElement("h4");
+    h4.className = "text-xs font-bold";
+    h4.textContent = comment.name;
+
+    const span = document.createElement("span");
+    span.className = "mono text-[9px] text-[var(--ink)]/50";
+    span.textContent = comment.role;
+
+    row.append(h4, span);
+
+    const p = document.createElement("p");
+    p.className = "text-[11px] text-[var(--ink)]/70";
+    p.textContent = `"${comment.text}"`;
+
+    card.append(row, p);
+    return card;
+  }
+
+  // Guestbook Logic
+  async function initGuestbook() {
     const commentForm = document.getElementById("commentForm") as HTMLFormElement;
     const commentsContainer = document.getElementById("commentsContainer")!;
+    const submitBtn = document.getElementById("submitCommentBtn") as HTMLButtonElement;
+    const statusBadge = document.getElementById("supabaseStatus")!;
 
-    commentForm.addEventListener("submit", (e) => {
+    const hasSupabase = isSupabaseConfigured();
+
+    if (!hasSupabase) {
+      statusBadge.textContent = "⚙️ Supabase: Mode Lokal (.env belum diisi)";
+      statusBadge.className = "mono text-[9px] px-2 py-0.5 hard-sm bg-[var(--paper)] text-amber-600 font-semibold";
+    } else {
+      statusBadge.textContent = "⚡ Supabase Active";
+      statusBadge.className = "mono text-[9px] px-2 py-0.5 hard-sm bg-[var(--lime)] text-[var(--ink)] font-bold";
+
+      // Load comments from Supabase
+      const { data, error } = await fetchCommentsFromSupabase();
+      if (error) {
+        statusBadge.textContent = "⚠️ Supabase Connected (Belum ada tabel SQL)";
+        statusBadge.className = "mono text-[9px] px-2 py-0.5 hard-sm bg-amber-200 text-amber-900 font-bold";
+      } else if (data && data.length > 0) {
+        commentsContainer.innerHTML = "";
+        data.forEach((c) => {
+          commentsContainer.appendChild(renderCommentCard(c));
+        });
+      }
+    }
+
+    commentForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const name = (document.getElementById("commenterName") as HTMLInputElement).value.trim();
-      const role = (document.getElementById("commenterRole") as HTMLInputElement).value.trim();
-      const text = (document.getElementById("commenterText") as HTMLTextAreaElement).value.trim();
+      const nameEl = document.getElementById("commenterName") as HTMLInputElement;
+      const roleEl = document.getElementById("commenterRole") as HTMLInputElement;
+      const textEl = document.getElementById("commenterText") as HTMLTextAreaElement;
+
+      const name = nameEl.value.trim();
+      const role = roleEl.value.trim();
+      const text = textEl.value.trim();
       if (!name || !role || !text) return;
 
-      const newComment = document.createElement("div");
-      newComment.className =
-        "hard-sm p-3 bg-[var(--lime)] transform translate-y-2 opacity-0 transition-all duration-500";
+      submitBtn.disabled = true;
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.innerHTML = `<span>MENGIRIM...</span>`;
 
-      const row = document.createElement("div");
-      row.className = "flex justify-between items-center mb-1";
-      const h4 = document.createElement("h4");
-      h4.className = "text-xs font-bold";
-      h4.textContent = name;
-      const span = document.createElement("span");
-      span.className = "mono text-[9px]";
-      span.textContent = role;
-      row.append(h4, span);
+      try {
+        if (isSupabaseConfigured()) {
+          const { data, error } = await postCommentToSupabase({ name, role, text });
 
-      const p = document.createElement("p");
-      p.className = "text-[11px]";
-      p.textContent = `"${text}"`;
-
-      newComment.append(row, p);
-      commentsContainer.insertBefore(newComment, commentsContainer.firstChild);
-      setTimeout(() => newComment.classList.remove("translate-y-2", "opacity-0"), 50);
-      commentForm.reset();
-      (window as any).showToast?.("Pesan berhasil dikirim", "💬");
+          if (error) {
+            (window as any).showToast?.("Gagal menyimpan ke Supabase: " + (error.message || "Error"), "⚠️");
+          } else if (data) {
+            const card = renderCommentCard(data, true);
+            commentsContainer.insertBefore(card, commentsContainer.firstChild);
+            setTimeout(() => card.classList.remove("translate-y-2", "opacity-0"), 50);
+            commentForm.reset();
+            (window as any).showToast?.("Komentar berhasil disimpan ke Supabase! 💬", "⚡");
+          }
+        } else {
+          // Fallback lokal jika belum dikonfigurasikan
+          const newComment: Comment = { name, role, text };
+          const card = renderCommentCard(newComment, true);
+          commentsContainer.insertBefore(card, commentsContainer.firstChild);
+          setTimeout(() => card.classList.remove("translate-y-2", "opacity-0"), 50);
+          commentForm.reset();
+          (window as any).showToast?.("Pesan dikirim (Mode Lokal). Konfigurasikan Supabase di .env 💬", "💬");
+        }
+      } catch (err: any) {
+        (window as any).showToast?.("Terjadi kesalahan saat mengirim pesan", "⚠️");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
     });
   }
 
-  // Copy email
+  // Copy email logic
   function initCopyEmail() {
     const copyEmailBtn = document.getElementById("copyEmailBtn")!;
     copyEmailBtn.addEventListener("click", () => {

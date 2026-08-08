@@ -88,11 +88,35 @@ export const tagColorClass: Record<Project["tagColor"], string> = {
 
 export const certifications = [
   {
-    name: "Google Certified UX Designer",
-    issuer: "Google Coursera • 2023",
+    name: "Introduction to Data Science and Microsoft Fabric",
+    issuer: "Microsoft Elevate • 2026",
   },
   {
-    name: "Advanced React Developer",
-    issuer: "Dicoding Indonesia • 2022",
+    name: "Belajar Dasar Pemrograman Web",
+    issuer: "Dicoding Indonesia • 2026",
+  },
+  {
+    name: "Mengembangkan Aplikasi AI Generatif di Azure",
+    issuer: "Microsoft Elevate • 2026",
+  },
+  {
+    name: "Introduction to Financial Literacy",
+    issuer: "Dicoding Indonesia • 2026",
+  },
+  {
+    name: "Cloud Camp Pekanbaru 2026 - Hackathon Web Innovation",
+    issuer: "IDCloudHost • 2026",
+  },
+  {
+    name: "Belajar Back-End Pemula dengan JavaScript",
+    issuer: "Dicoding Indonesia • 2026",
+  },
+  {
+    name: "Stage 1 – Code Kickstart: Python Programming",
+    issuer: "Dibimbing • 2025",
+  },
+  {
+    name: "Belajar Dasar AI",
+    issuer: "Dicoding Indonesia • 2026",
   },
 ];
