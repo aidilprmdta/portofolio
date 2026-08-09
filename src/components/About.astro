@@ -1,6 +1,6 @@
 ---
-import { techStack } from "../data/experience";
-import { playlist } from "../data/music";
+import { techStack } from "../data/experience.js";
+import { playlist } from "../data/music.js";
 ---
 
 <section id="about" class="py-20 px-6 max-w-6xl mx-auto reveal">
@@ -22,7 +22,7 @@ import { playlist } from "../data/music";
           />
           <div>
             <h3 class="display text-lg">Aidil Pramadita Putra</h3>
-            <p class="mono text-xs text-[var(--blue)] font-bold">Digital Product Engineer</p>
+            <p class="mono text-xs text-[var(--blue)] font-bold">CREATIVE DEVELOPER</p>
           </div>
         </div>
         <p class="text-sm text-[var(--ink)]/80 leading-relaxed">
@@ -167,38 +167,38 @@ import { playlist } from "../data/music";
 </section>
 
 <script>
-  import { playlist } from "../data/music";
+  import { playlist } from "../data/music.js";
 
   function initMusicPlayer() {
     let currentTrackIndex = 0;
     let isPlaying = false;
     let isMuted = false;
 
-    const audio = document.getElementById("audio-player") as HTMLAudioElement;
-    const playBtn = document.getElementById("music-play-btn")!;
-    const playIcon = document.getElementById("music-play-icon")!;
-    const prevBtn = document.getElementById("music-prev-btn")!;
-    const nextBtn = document.getElementById("music-next-btn")!;
-    const volumeBtn = document.getElementById("music-vol-btn")!;
-    const volIcon = document.getElementById("music-vol-icon")!;
+    const audio = document.getElementById("audio-player");
+    const playBtn = document.getElementById("music-play-btn");
+    const playIcon = document.getElementById("music-play-icon");
+    const prevBtn = document.getElementById("music-prev-btn");
+    const nextBtn = document.getElementById("music-next-btn");
+    const volumeBtn = document.getElementById("music-vol-btn");
+    const volIcon = document.getElementById("music-vol-icon");
     
-    const titleEl = document.getElementById("music-title")!;
-    const artistEl = document.getElementById("music-artist")!;
-    const coverEl = document.getElementById("music-cover")!;
-    const currentTimeEl = document.getElementById("music-current-time")!;
-    const durationTimeEl = document.getElementById("music-duration-time")!;
-    const progressBar = document.getElementById("music-progress-bar") as HTMLInputElement;
-    const progressFill = document.getElementById("music-progress-fill")!;
+    const titleEl = document.getElementById("music-title");
+    const artistEl = document.getElementById("music-artist");
+    const coverEl = document.getElementById("music-cover");
+    const currentTimeEl = document.getElementById("music-current-time");
+    const durationTimeEl = document.getElementById("music-duration-time");
+    const progressBar = document.getElementById("music-progress-bar");
+    const progressFill = document.getElementById("music-progress-fill");
     const eqBars = document.querySelectorAll(".eq-bar");
 
     // Web Audio Synthesizer fallback if external audio fails/blocked
-    let audioCtx: AudioContext | null = null;
-    let synthInterval: any = null;
+    let audioCtx = null;
+    let synthInterval = null;
 
     function playSynthTone() {
       try {
         if (!audioCtx) {
-          audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
         if (audioCtx.state === "suspended") {
           audioCtx.resume();
@@ -236,7 +236,7 @@ import { playlist } from "../data/music";
       }
     }
 
-    function loadTrack(index: number) {
+    function loadTrack(index) {
       currentTrackIndex = (index + playlist.length) % playlist.length;
       const track = playlist[currentTrackIndex];
 
@@ -252,14 +252,14 @@ import { playlist } from "../data/music";
       currentTimeEl.textContent = "00:00";
     }
 
-    function formatTime(seconds: number): string {
+    function formatTime(seconds) {
       if (isNaN(seconds)) return "00:00";
       const mins = Math.floor(seconds / 60);
       const secs = Math.floor(seconds % 60);
       return `${mins < 10 ? "0" : ""}${mins}:${secs < 10 ? "0" : ""}${secs}`;
     }
 
-    function setPlayingState(playing: boolean) {
+    function setPlayingState(playing) {
       isPlaying = playing;
       playIcon.textContent = isPlaying ? "⏸" : "▶";
       eqBars.forEach((bar) => {
@@ -281,7 +281,7 @@ import { playlist } from "../data/music";
           console.warn("[MusicPlayer] External audio playback failed, falling back to Pop Punk synth:", e);
           startSynthLoop();
           setPlayingState(true);
-          (window as any).showToast?.("Memutar Pop Punk Synth 🎸", "🎸");
+          window.showToast?.("Memutar Pop Punk Synth 🎸", "🎸");
         }
       }
     }
@@ -324,7 +324,7 @@ import { playlist } from "../data/music";
     });
 
     progressBar.addEventListener("input", (e) => {
-      const val = parseFloat((e.target as HTMLInputElement).value);
+      const val = parseFloat(e.target.value);
       if (!isNaN(audio.duration)) {
         audio.currentTime = (val / 100) * audio.duration;
       }
@@ -334,7 +334,7 @@ import { playlist } from "../data/music";
   }
 
   function updateClock() {
-    const options: Intl.DateTimeFormatOptions = {
+    const options = {
       timeZone: "Asia/Jakarta",
       hour: "2-digit",
       minute: "2-digit",
