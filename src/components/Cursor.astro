@@ -2,8 +2,8 @@
 <div class="cur-dot hidden md:block" id="curDot"></div>
 
 <script>
-  const dot = document.getElementById("curDot") as HTMLElement | null;
-  const ring = document.getElementById("curRing") as HTMLElement | null;
+  const dot = document.getElementById("curDot");
+  const ring = document.getElementById("curRing");
 
   if (dot && ring && window.matchMedia("(pointer:fine)").matches) {
     let rx = 0,
@@ -19,8 +19,8 @@
     function loop() {
       rx += (mx - rx) * 0.18;
       ry += (my - ry) * 0.18;
-      ring!.style.left = rx + "px";
-      ring!.style.top = ry + "px";
+      ring.style.left = rx + "px";
+      ring.style.top = ry + "px";
       requestAnimationFrame(loop);
     }
     loop();
