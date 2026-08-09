@@ -31,22 +31,16 @@
 </div>
 
 <script>
-  interface Command {
-    label: string;
-    hint: string;
-    action: () => void;
-  }
-
   function initCommandPalette() {
-    const cmdOverlay = document.getElementById("cmdOverlay")!;
-    const cmdInput = document.getElementById("cmdInput") as HTMLInputElement;
-    const cmdList = document.getElementById("cmdList")!;
+    const cmdOverlay = document.getElementById("cmdOverlay");
+    const cmdInput = document.getElementById("cmdInput");
+    const cmdList = document.getElementById("cmdList");
     const cmdTrigger = document.getElementById("cmdTrigger");
-    const cmdClose = document.getElementById("cmdClose")!;
+    const cmdClose = document.getElementById("cmdClose");
     const themeToggle = document.getElementById("themeToggle");
     const copyEmailBtn = document.getElementById("copyEmailBtn");
 
-    const commands: Command[] = [
+    const commands = [
       { label: "Ke Tentang", hint: "Section", action: () => scrollToId("about") },
       {
         label: "Ke Pengalaman Kerja",
@@ -62,17 +56,17 @@
       {
         label: "Salin Alamat Email",
         hint: "Aksi",
-        action: () => (copyEmailBtn as HTMLElement | null)?.click(),
+        action: () => copyEmailBtn?.click(),
       },
       {
         label: "Ganti Tema Gelap/Terang",
         hint: "Aksi",
-        action: () => (themeToggle as HTMLElement | null)?.click(),
+        action: () => themeToggle?.click(),
       },
       {
         label: "Unduh CV",
         hint: "Aksi",
-        action: () => (window as any).showToast?.("Menyiapkan unduhan CV...", "💾"),
+        action: () => window.showToast?.("Menyiapkan unduhan CV...", "💾"),
       },
       { label: "Buka GitHub", hint: "Link", action: () => window.open("https://github.com/aidilprmdta", "_blank") },
       {
@@ -92,7 +86,7 @@
       },
     ];
 
-    function scrollToId(id: string) {
+    function scrollToId(id) {
       closeCmd();
       const el = document.getElementById(id);
       if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -133,7 +127,7 @@
       });
     }
 
-    function moveSelection(dir: number) {
+    function moveSelection(dir) {
       const items = Array.from(cmdList.querySelectorAll(".cmd-item"));
       if (items.length === 0) return;
       let idx = items.findIndex((el) => el.classList.contains("sel"));
@@ -167,7 +161,7 @@
         const sel =
           cmdList.querySelector(".cmd-item.sel") ||
           cmdList.querySelector(".cmd-item");
-        (sel as HTMLElement | null)?.click();
+        sel?.click();
       } else if (e.key === "ArrowDown") {
         e.preventDefault();
         moveSelection(1);
