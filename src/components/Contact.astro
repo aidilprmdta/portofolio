@@ -1,5 +1,5 @@
 ---
-import { initialComments } from "../data/comments";
+import { initialComments } from "../data/comments.js";
 ---
 
 <section id="contact" class="py-20 px-6 max-w-6xl mx-auto reveal">
@@ -118,10 +118,9 @@ import { initialComments } from "../data/comments";
 </section>
 
 <script>
-  import { fetchCommentsFromSupabase, postCommentToSupabase, isSupabaseConfigured } from "../lib/supabase";
-  import type { Comment } from "../data/comments";
+  import { fetchCommentsFromSupabase, postCommentToSupabase, isSupabaseConfigured } from "../lib/supabase.js";
 
-  function renderCommentCard(comment: Comment, isHighlight = false): HTMLElement {
+  function renderCommentCard(comment, isHighlight = false) {
     const card = document.createElement("div");
     card.className = isHighlight
       ? "hard-sm p-3 bg-[var(--lime)] transform translate-y-2 opacity-0 transition-all duration-500"
@@ -150,10 +149,10 @@ import { initialComments } from "../data/comments";
 
   // Guestbook Logic
   async function initGuestbook() {
-    const commentForm = document.getElementById("commentForm") as HTMLFormElement;
-    const commentsContainer = document.getElementById("commentsContainer")!;
-    const submitBtn = document.getElementById("submitCommentBtn") as HTMLButtonElement;
-    const statusBadge = document.getElementById("supabaseStatus")!;
+    const commentForm = document.getElementById("commentForm");
+    const commentsContainer = document.getElementById("commentsContainer");
+    const submitBtn = document.getElementById("submitCommentBtn");
+    const statusBadge = document.getElementById("supabaseStatus");
 
     const hasSupabase = isSupabaseConfigured();
 
@@ -179,9 +178,9 @@ import { initialComments } from "../data/comments";
 
     commentForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const nameEl = document.getElementById("commenterName") as HTMLInputElement;
-      const roleEl = document.getElementById("commenterRole") as HTMLInputElement;
-      const textEl = document.getElementById("commenterText") as HTMLTextAreaElement;
+      const nameEl = document.getElementById("commenterName");
+      const roleEl = document.getElementById("commenterRole");
+      const textEl = document.getElementById("commenterText");
 
       const name = nameEl.value.trim();
       const role = roleEl.value.trim();
@@ -197,25 +196,25 @@ import { initialComments } from "../data/comments";
           const { data, error } = await postCommentToSupabase({ name, role, text });
 
           if (error) {
-            (window as any).showToast?.("Gagal menyimpan ke Supabase: " + (error.message || "Error"), "⚠️");
+            window.showToast?.("Gagal menyimpan ke Supabase: " + (error.message || "Error"), "⚠️");
           } else if (data) {
             const card = renderCommentCard(data, true);
             commentsContainer.insertBefore(card, commentsContainer.firstChild);
             setTimeout(() => card.classList.remove("translate-y-2", "opacity-0"), 50);
             commentForm.reset();
-            (window as any).showToast?.("Komentar berhasil disimpan ke Supabase! 💬", "⚡");
+            window.showToast?.("Komentar berhasil disimpan ke Supabase! 💬", "⚡");
           }
         } else {
           // Fallback lokal jika belum dikonfigurasikan
-          const newComment: Comment = { name, role, text };
+          const newComment = { name, role, text };
           const card = renderCommentCard(newComment, true);
           commentsContainer.insertBefore(card, commentsContainer.firstChild);
           setTimeout(() => card.classList.remove("translate-y-2", "opacity-0"), 50);
           commentForm.reset();
-          (window as any).showToast?.("Pesan dikirim (Mode Lokal). Konfigurasikan Supabase di .env 💬", "💬");
+          window.showToast?.("Pesan dikirim (Mode Lokal). Konfigurasikan Supabase di .env 💬", "💬");
         }
-      } catch (err: any) {
-        (window as any).showToast?.("Terjadi kesalahan saat mengirim pesan", "⚠️");
+      } catch (err) {
+        window.showToast?.("Terjadi kesalahan saat mengirim pesan", "⚠️");
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnText;
@@ -225,16 +224,16 @@ import { initialComments } from "../data/comments";
 
   // Copy email logic
   function initCopyEmail() {
-    const copyEmailBtn = document.getElementById("copyEmailBtn")!;
+    const copyEmailBtn = document.getElementById("copyEmailBtn");
     copyEmailBtn.addEventListener("click", () => {
       const email = "pramadytaa@gmail.com";
       navigator.clipboard
         ?.writeText(email)
         .then(() => {
-          (window as any).showToast?.("Email disalin ke clipboard", "📋");
+          window.showToast?.("Email disalin ke clipboard", "📋");
         })
         .catch(() =>
-          (window as any).showToast?.("Gagal menyalin, salin manual: " + email, "⚠️")
+          window.showToast?.("Gagal menyalin, salin manual: " + email, "⚠️")
         );
     });
   }
