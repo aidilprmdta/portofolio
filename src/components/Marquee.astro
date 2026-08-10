@@ -1,14 +1,6 @@
 ---
-interface Props {
-  items: string[];
-  wrapClass?: string;
-  trackClass?: string;
-  itemClass?: string;
-  separator?: string;
-}
-
 const {
-  items,
+  items = [],
   wrapClass = "",
   trackClass = "",
   itemClass = "px-4",
