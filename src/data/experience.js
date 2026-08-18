@@ -1,11 +1,15 @@
-export interface ExperienceItem {
-  period: string;
-  title: string;
-  desc: string;
-  color: string;
-}
+// src/data/experience.js
+import {
+  SiReact,
+  SiAstro,
+  SiNextdotjs,
+  SiJavascript,
+  SiTailwindcss,
+  SiNodedotjs,
+  SiFigma
+} from "react-icons/si";
 
-export const experience: ExperienceItem[] = [
+export const experience = [
   {
     period: "2025 - SEKARANG",
     title: "DEPUTY HEAD OF THE INFORMATION AND COMMUNICATION DEPARTMENT",
@@ -50,13 +54,7 @@ export const experience: ExperienceItem[] = [
   },
 ];
 
-export interface Skill {
-  label: string;
-  percent: number;
-  color: string;
-}
-
-export const skills: Skill[] = [
+export const skills = [
   { label: "Frontend Development", percent: 92, color: "var(--blue)" },
   { label: "UI/UX Design", percent: 88, color: "var(--coral)" },
   { label: "Motion & Animasi", percent: 75, color: "var(--pink)" },
@@ -71,11 +69,11 @@ export const stats = [
 ];
 
 export const techStack = [
-  { icon: "⚛️", label: "React" },
-  { icon: "⚡", label: "Next.js" },
-  { icon: "🎨", label: "Figma" },
-  { icon: "🔷", label: "JS" },
-  { icon: "🔷", label: "Astro" },
-  { icon: "🎬", label: "Premiere" },
-  { icon: "💨", label: "Tailwind" },
+  { icon: SiReact, label: "React" },
+  { icon: SiAstro, label: "Astro" },
+  { icon: SiNextdotjs, label: "Next.js" },
+  { icon: SiJavascript, label: "JavaScript" },
+  { icon: SiTailwindcss, label: "Tailwind CSS" },
+  { icon: SiNodedotjs, label: "Node.js" },
+  { icon: SiFigma, label: "Figma" },
 ];

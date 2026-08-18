@@ -1,21 +1,4 @@
-export type ProjectCategory = "it" | "design" | "video";
-
-export interface Project {
-  title: string;
-  shortDesc: string;
-  desc: string;
-  img: string;
-  thumb: string;
-  tags: string[];
-  category: ProjectCategory;
-  live: string;
-  repo: string;
-  rotate: string;
-  tagColor: "lime" | "coral" | "blue";
-  initiallyHidden?: boolean;
-}
-
-export const projects: Project[] = [
+export const projects = [
   {
     title: "SISTEM E-COMMERCE HEADLESS",
     shortDesc:
@@ -80,7 +63,7 @@ export const projects: Project[] = [
   },
 ];
 
-export const tagColorClass: Record<Project["tagColor"], string> = {
+export const tagColorClass = {
   lime: "bg-[var(--lime)]",
   coral: "bg-[var(--coral)] text-white",
   blue: "bg-[var(--blue)] text-white",

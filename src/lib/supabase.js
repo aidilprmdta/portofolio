@@ -1,10 +1,9 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { Comment } from "../data/comments";
+import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = (import.meta.env.PUBLIC_SUPABASE_URL || "").trim();
 const supabaseAnonKey = (import.meta.env.PUBLIC_SUPABASE_ANON_KEY || "").trim();
 
-export const isSupabaseConfigured = (): boolean => {
+export const isSupabaseConfigured = () => {
   return (
     Boolean(supabaseUrl) &&
     Boolean(supabaseAnonKey) &&
@@ -13,9 +12,9 @@ export const isSupabaseConfigured = (): boolean => {
   );
 };
 
-let clientInstance: SupabaseClient | null = null;
+let clientInstance = null;
 
-export const getSupabase = (): SupabaseClient | null => {
+export const getSupabase = () => {
   if (!isSupabaseConfigured()) return null;
   if (!clientInstance) {
     clientInstance = createClient(supabaseUrl, supabaseAnonKey);
@@ -26,7 +25,7 @@ export const getSupabase = (): SupabaseClient | null => {
 /**
  * Fetch all comments from Supabase ordered by created_at DESC
  */
-export async function fetchCommentsFromSupabase(): Promise<{ data: Comment[] | null; error: any }> {
+export async function fetchCommentsFromSupabase() {
   const client = getSupabase();
   if (!client) {
     return { data: null, error: new Error("Supabase credentials not configured in .env") };
@@ -43,7 +42,7 @@ export async function fetchCommentsFromSupabase(): Promise<{ data: Comment[] | n
       return { data: null, error };
     }
 
-    return { data: data as Comment[], error: null };
+    return { data, error: null };
   } catch (err) {
     console.error("[Supabase] Error fetching comments:", err);
     return { data: null, error: err };
@@ -53,11 +52,7 @@ export async function fetchCommentsFromSupabase(): Promise<{ data: Comment[] | n
 /**
  * Insert a new comment into Supabase
  */
-export async function postCommentToSupabase(comment: {
-  name: string;
-  role: string;
-  text: string;
-}): Promise<{ data: Comment | null; error: any }> {
+export async function postCommentToSupabase(comment) {
   const client = getSupabase();
   if (!client) {
     return { data: null, error: new Error("Supabase credentials not configured in .env") };
@@ -81,7 +76,7 @@ export async function postCommentToSupabase(comment: {
       return { data: null, error };
     }
 
-    return { data: data as Comment, error: null };
+    return { data, error: null };
   } catch (err) {
     console.error("[Supabase] Unexpected error posting comment:", err);
     return { data: null, error: err };

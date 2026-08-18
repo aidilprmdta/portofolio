@@ -1,12 +1,4 @@
-export interface Comment {
-  id?: string;
-  name: string;
-  role: string;
-  text: string;
-  created_at?: string;
-}
-
-export const initialComments: Comment[] = [
+export const initialComments = [
   {
     id: "1",
     name: "Sarah Jenkins",

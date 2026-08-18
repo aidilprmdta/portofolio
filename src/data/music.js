@@ -1,14 +1,4 @@
-export interface Track {
-  id: string;
-  title: string;
-  artist: string;
-  album: string;
-  cover: string;
-  src: string;
-  duration: string;
-}
-
-export const playlist: Track[] = [
+export const playlist = [
   {
     id: "1",
     title: "ALL THE SMALL THINGS",

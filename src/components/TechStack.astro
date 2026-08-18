@@ -1,0 +1,15 @@
+---
+import { techStack } from "../data/experience";
+---
+
+<div class="tech-wrapper grid grid-cols-2 sm:grid-cols-4 gap-6 mt-12">
+  {techStack.map((item, index) => {
+    const IconComponent = item.icon;
+    return (
+      <div key={index} className="box-tech flex flex-col items-center justify-center">
+        <IconComponent />
+        <span>{item.label}</span>
+      </div>
+    );
+  })}
+</div>
