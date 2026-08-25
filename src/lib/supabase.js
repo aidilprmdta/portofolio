@@ -82,3 +82,5 @@ export async function postCommentToSupabase(comment) {
     return { data: null, error: err };
   }
 }
+
+
