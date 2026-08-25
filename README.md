@@ -46,9 +46,13 @@ Feel free to check [our documentation](https://docs.astro.build) or jump into ou
 
 ```bash
 npm install
-npm run dev       # dev server di http://localhost:4321
+npm run dev       # dev server di
+http://localhost:4321
 npm run build     # build production ke ./dist
 npm run preview   # preview hasil build
 ```
 
 Lihat `PRD.md` untuk dokumentasi requirement lengkap.
+
+
+
