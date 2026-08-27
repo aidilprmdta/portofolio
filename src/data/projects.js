@@ -1,13 +1,13 @@
 export const projects = [
   {
-    title: "SISTEM E-COMMERCE HEADLESS",
+    title: "Apps ScamShield AI",
     shortDesc:
-      "Toko online performa tinggi dibangun dengan React modern dan serverless database.",
-    desc: "Toko online performa tinggi dibangun dengan arsitektur headless: React di frontend, layanan serverless untuk katalog & checkout, serta cache di edge supaya loading tetap kilat walau traffic tinggi. Fokus utama proyek ini adalah conversion rate — mulai dari micro-interaction tombol beli sampai proses checkout satu halaman.",
+      "Aplikasi pendeteksi penipuan",
+    desc: "Aplikasi mendeteksi penipuan seperti link phising, qr palsu, chat phising dll",
     img: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1000",
     thumb:
       "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=600",
-    tags: ["Next.js", "GraphQL", "Stripe", "Vercel"],
+    tags: ["kotlin", "Python", "Firebase", "Railway"],
     category: "it",
     live: "#",
     repo: "#",
