@@ -15,7 +15,7 @@ export const projects = [
     tagColor: "lime",
   },
   {
-    title: 'DESIGN SYSTEM "AURA"',
+    title: 'Web Profile Prodi Teknik Informatika UIN SUSKA Riau"',
     shortDesc:
       "Panduan gaya, pustaka komponen Figma, dan antarmuka komprehensif produk FinTech.",
     desc: "Design system komprehensif untuk produk FinTech: token warna & tipografi, 60+ komponen Figma siap pakai, dan dokumentasi penggunaan agar tim desain dan engineering tetap selaras. Dipakai lintas 4 tim produk internal.",
