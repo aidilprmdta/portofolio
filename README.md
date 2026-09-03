@@ -168,7 +168,7 @@ npm run preview
 
 ### Aidil Pramadita Putra
 
-**Creative Developer · Frontend Developer · Informatics Engineering Student**
+**Creative Developer · Informatics Engineering Student**
 
 I enjoy building web applications, exploring new technologies, and combining development with design and creative work.
 
